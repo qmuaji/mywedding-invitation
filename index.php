@@ -1,29 +1,49 @@
 <?php 
-	if(!empty($_POST)) {
-		require_once 'dodol.php';
-		$nama_lengkap 	= filter_var($_POST['nama_lengkap'], FILTER_SANITIZE_STRING);
-		$email 		 	= filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-		$hadir 			= filter_var($_POST['hadir'], FILTER_SANITIZE_STRING);
-		$jumlah_hadir	= filter_var($_POST['jumlah_hadir'], FILTER_SANITIZE_NUMBER_INT);
-		$pesan			= filter_var($_POST['pesan'], FILTER_SANITIZE_STRING);
+$timestamp = "2018.12.29T13:34";
 
-		$sql = "INSERT INTO `rsvp` (`nama_lengkap`, `email`, `hadir`, `jumlah_hadir`, `pesan`) VALUES ('$nama_lengkap', '$email', '$hadir', $jumlah_hadir, '$pesan');";
+$today = new DateTime(); // This object represents current date/time
+$today->setTime( 0, 0, 0 ); // reset time part, to prevent partial comparison
 
-		if ($conn->query($sql) === TRUE) {
-		    ?><script type="text/javascript"> alert("Terimakasih <?php echo $nama_lengkap ?>, Mohon do'a & restunya ya :)");</script><?php
-		} else {
-		   ?><script type="text/javascript"> alert("Hi <?php echo $nama_lengkap ?>, Silakan gunakan email lain untuk kirim RSVP baru :)");</script><?php
-		}
-	} 
+$match_date = DateTime::createFromFormat( "Y.m.d\\TH:i", $timestamp );
+$match_date->setTime( 0, 0, 0 ); // reset time part, to prevent partial comparison
+
+$diff = $today->diff( $match_date );
+$diffDays = (integer)$diff->format( "%R%a" ); // Extract days count in interval
+
+if ($diffDays > 0) {
+    
+    $rsvp = 'enabled';
+    
+    if(!empty($_POST)) {
+    	require_once 'dodol.php';
+    	$nama_lengkap 	= filter_var($_POST['nama_lengkap'], FILTER_SANITIZE_STRING);
+    	$email 		 	= filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    	$hadir 			= filter_var($_POST['hadir'], FILTER_SANITIZE_STRING);
+    	$jumlah_hadir	= filter_var($_POST['jumlah_hadir'], FILTER_SANITIZE_NUMBER_INT);
+    	$pesan			= filter_var($_POST['pesan'], FILTER_SANITIZE_STRING);
+    
+    	$sql = "INSERT INTO `rsvp` (`nama_lengkap`, `email`, `hadir`, `jumlah_hadir`, `pesan`) VALUES ('$nama_lengkap', '$email', '$hadir', $jumlah_hadir, '$pesan');";
+    
+    	if ($conn->query($sql) === TRUE) {
+    	    ?><script type="text/javascript"> alert("Terimakasih <?php echo $nama_lengkap ?>, Mohon do'a & restunya ya :)");</script><?php
+    	} else {
+    	   ?><script type="text/javascript"> alert("Hi <?php echo $nama_lengkap ?>, Silakan gunakan email lain untuk kirim RSVP baru :)");</script><?php
+    	}
+    } 
+    
+} else {
+    $rsvp = 'disabled';
+}
+
 ?>
 
 <!DOCTYPE HTML>
 <html>
-	<head>
+	<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>Gitami Ayuningdiah &amp; Risky Muaji - Wedding - 29th DECEMBER 2018</title>
 		<meta name="description" content="R S V P • Undangan Pernikahan Gitami Ayuningdiah & Risky Muaji Setya P - 21 Rabi'ul-Akhir 1440 H." />
-		<meta charset="utf-8" />
-		<link rel="shortcut icon" type="image/x-icon" href="images/giamirisky.png" />
+		
+		<link rel="shortcut icon" type="image/x-icon" href="images/lopegita.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<style type="text/css">	@font-face {font-family: tulisan; src: url(assets/fonts/Sacramento-Regular.ttf)}.small {line-height: 0.8;font-family: tulisan;}.google-map {position: relative;padding-bottom: 50%;height: 0;overflow: hidden;}.google-map iframe {position: absolute;border: 2px;top: 0;left: 0;width: 100% !important;height: 100% !important;}</style>
 		<link rel="stylesheet" href="assets/css/main.css" />		
@@ -36,7 +56,7 @@
 
 				<!-- Header -->
 					<header id="header" class="alt">
-						<h1>  بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ     </h1> 
+                    	<h1>&#65021;</h1>
 						<p>WE ARE TYING THE KNOT</p>
 						<h1 class="small" style="font-family: tulisan;">G &nbsp <br> &nbsp R</h1>
 						<p>Together forever until Jannah, in syaa Allah. </p>						
@@ -61,11 +81,11 @@
 								<header class="major">
 									<h2>Undangan</h2>
 									<p>Dengan memohon ridho serta rahmat Allah, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk dapat menghadiri akad nikah dan walimatul 'urs putra putri kami yang in syaa Allah akan dilaksanakan pada:</p>	
-								</header>
+								
 								<h3>										
 									<dl class="alt">
 										<dt><span class="icon fa-calendar"></span></dt>
-										<dd>29 Desember 2018 <br> <sup>21 Rabi'ul-Akhir 1440 H</sup></dd>
+										<dd>22 Rabi'ul-Akhir 1440 H <br> <sup>29 Desember 2018</sup></dd>
 										<dt><span class="icon fa-clock-o"></span></dt>
 										<dd>9:00 AM - 2:00 PM</dd>
 										<dt><span class="icon fa-map-marker"></span> </dt>
@@ -73,8 +93,9 @@
 									</dl>
 								</h3>									
 								<p>Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada putra putri kami. Jazakumullahu khairan.</p>
+								</header>
 								<footer class="major">
-									<a href="#rsvp" class="button primary icon fa-envelope-o fit">Buat RSVP</a>
+									<a href="#rsvp" class="button primary icon fa-envelope-o fit"> Buat RSVP </a>
 								</footer>
 							</section>
 
@@ -116,7 +137,7 @@
 										<h3 class="major">Akad & Resepsi</h3>
 										<dl class="alt">
 											<dt><span class="icon fa-calendar"></span></dt>
-											<dd>29 Desember 2018 <br> <sup>21 Rabi'ul-Akhir 1440 H</sup></dd>
+											<dd>22 Rabi'ul-Akhir 1440 H <br> <sup>29 Desember 2018</sup></dd>
 											<dt><span class="icon fa-clock-o"></span></dt>
 											<dd>9:00 AM - 2:00 PM</dd>
 											<dt><span class="icon fa-map-marker"></span></dt>
@@ -166,7 +187,7 @@
 												<textarea name="pesan" id="pesan" rows="2" minlength="12" placeholder="Pertanyaan, Komentar atau Pesan?"></textarea>
 											</div>
 											<div class="col-12">
-												<input type="submit" value="Kirim RSVP" class="button primary fit" />
+												<input type="submit" value="Kirim RSVP" class="button primary fit" <?=$rsvp?>/>
 											</div>											
 										</div>
 									</form>	
